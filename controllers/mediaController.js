@@ -1,6 +1,6 @@
 import Media from "../models/media.js";
 
-// ➕ Create media
+// Create media
 export const createMedia = async (req, res) => {
   try {
     const media = new Media(req.body);
@@ -11,7 +11,7 @@ export const createMedia = async (req, res) => {
   }
 };
 
-// 📖 Get all media
+// Get all media
 export const getAllMedia = async (req, res) => {
   try {
     const media = await Media.find();
@@ -21,7 +21,7 @@ export const getAllMedia = async (req, res) => {
   }
 };
 
-// 🔍 Get single media
+// Get single media
 export const getMediaById = async (req, res) => {
   try {
     const media = await Media.findById(req.params.id);
@@ -32,7 +32,7 @@ export const getMediaById = async (req, res) => {
   }
 };
 
-// ✏️ Update media
+// Update media
 export const updateMedia = async (req, res) => {
   try {
     const media = await Media.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -43,7 +43,7 @@ export const updateMedia = async (req, res) => {
   }
 };
 
-// ❌ Delete media
+// Delete media
 export const deleteMedia = async (req, res) => {
   try {
     const media = await Media.findByIdAndDelete(req.params.id);
