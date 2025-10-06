@@ -6,15 +6,16 @@ import {
   updateMedia,
   deleteMedia
 } from "../controllers/mediaController.js";
-import { protect } from "../middlewares/authMiddleware.js";
+
+import { auth } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
 // Only logged-in users can interact
-router.post("/", protect, createMedia);
+router.post("/", auth, createMedia);
 router.get("/", getAllMedia);
 router.get("/:id", getMediaById);
-router.put("/:id", protect, updateMedia);
-router.delete("/:id", protect, deleteMedia);
+router.put("/:id", auth, updateMedia);
+router.delete("/:id", auth, deleteMedia);
 
 export default router;
