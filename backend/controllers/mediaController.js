@@ -1,7 +1,5 @@
 import Media from "../models/media.js";
 
-// CRUD stuff
-
 //  Create media
 export const createMedia = async (req, res) => {
   try {
@@ -16,16 +14,12 @@ export const createMedia = async (req, res) => {
 // 📖 Get all media (with search, filter, pagination)
 export const getAllMedia = async (req, res) => {
   try {
-    const { q, category, page = 1, limit = 10 } = req.query;
+    const { title, author, category, page = 1, limit = 10 } = req.query;
     const query = {};
 
-    if (q) {
-      query.title = { $regex: q, $options: "i" }; // search by title
-    }
-
-    if (category) {
-      query.category = category; // filter by category
-    }
+    if (title) query.title = { $regex: title, $options: "i" };
+    if (author) query.author = { $regex: author, $options: "i" };
+    if (category) query.category = { $regex: `^${category}$`, $options: "i" };
 
     const skip = (page - 1) * limit;
 
@@ -35,18 +29,11 @@ export const getAllMedia = async (req, res) => {
 
     const total = await Media.countDocuments(query);
 
-    res.json({
-      total,
-      page: parseInt(page),
-      limit: parseInt(limit),
-      results: media,
-    });
+    res.json({ total, page: parseInt(page), limit: parseInt(limit), results: media });
   } catch (err) {
     res.status(500).json({ message: "Error fetching media", error: err.message });
   }
 };
-
-
 
 //  Get single media + auto increment views
 export const getMediaById = async (req, res) => {
@@ -54,7 +41,6 @@ export const getMediaById = async (req, res) => {
     const media = await Media.findById(req.params.id);
     if (!media) return res.status(404).json({ message: "Media not found" });
 
-    // Increment views
     media.views += 1;
     await media.save();
 
@@ -83,5 +69,21 @@ export const deleteMedia = async (req, res) => {
     res.json({ message: "Media deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Error deleting media", error: err.message });
+  }
+};
+
+// ✅ Get trending/popular media
+export const getTrendingMedia = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+
+    // Sort by views first, then saves (descending)
+    const media = await Media.find()
+      .sort({ views: -1, saves: -1 })
+      .limit(limit);
+
+    res.json(media);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching trending media", error: err.message });
   }
 };
