@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import { admin } from "../middlewares/adminMiddleware.js";
 import {
   createMedia,
@@ -12,14 +12,12 @@ import {
 
 const router = express.Router();
 
-// Public routes
 router.get("/", getAllMedia);
-router.get("/trending", getTrendingMedia); // ✅ Must be before :id
+router.get("/trending", getTrendingMedia);
 router.get("/:id", getMediaById);
 
-// Admin-only routes
-router.post("/", auth, admin, createMedia);
-router.patch("/:id", auth, admin, updateMedia);
-router.delete("/:id", auth, admin, deleteMedia);
+router.post("/", protect, admin, createMedia);
+router.patch("/:id", protect, admin, updateMedia);
+router.delete("/:id", protect, admin, deleteMedia);
 
 export default router;

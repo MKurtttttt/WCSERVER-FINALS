@@ -1,5 +1,5 @@
 import express from "express";
-import { auth } from "../middlewares/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import {
   addUserMedia,
   getUserMedia,
@@ -9,9 +9,9 @@ import {
 
 const router = express.Router();
 
-router.post("/", auth, addUserMedia);
-router.get("/", auth, getUserMedia);
-router.patch("/:id", auth, updateUserMedia);
-router.delete("/:id", auth, deleteUserMedia);
+router.post("/", protect, addUserMedia);
+router.get("/", protect, getUserMedia);
+router.patch("/:id", protect, updateUserMedia);
+router.delete("/:id", protect, deleteUserMedia);
 
 export default router;
