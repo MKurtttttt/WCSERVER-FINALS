@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 const API_URL = 'http://localhost:5000/api'
+export const PUBLIC_BASE_URL = API_URL.replace(/\/api$/, '')
 
 const api = axios.create({
   baseURL: API_URL
@@ -27,6 +28,14 @@ export const mediaAPI = {
   update: (id, data) => api.patch(`/media/${id}`, data),
   delete: (id) => api.delete(`/media/${id}`)
 }
+
+// multipart helpers
+mediaAPI.createMultipart = (formData) => api.post('/media', formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+})
+mediaAPI.updateMultipart = (id, formData) => api.patch(`/media/${id}`, formData, {
+  headers: { 'Content-Type': 'multipart/form-data' }
+})
 
 export const userMediaAPI = {
   getAll: () => api.get('/userMedia'),

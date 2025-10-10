@@ -16,7 +16,8 @@
     <div v-else-if="media" class="detail-container">
       <div class="detail-content">
         <div class="media-image-large">
-          <div class="placeholder-img">📚</div>
+          <img v-if="media.coverImageUrl" :src="resolveImage(media.coverImageUrl)" :alt="media.title" class="cover-large" />
+          <div v-else class="placeholder-img">📚</div>
         </div>
 
         <div class="media-details">
@@ -66,7 +67,7 @@
 </template>
 
 <script>
-import { mediaAPI, userMediaAPI } from '../services/api'
+import { mediaAPI, userMediaAPI, PUBLIC_BASE_URL } from '../services/api'
 
 export default {
   name: 'MediaDetail',
@@ -84,6 +85,11 @@ export default {
   methods: {
     checkAuth() {
       this.isLoggedIn = !!localStorage.getItem('token')
+    },
+    resolveImage(path) {
+      if (!path) return ''
+      if (path.startsWith('http://') || path.startsWith('https://')) return path
+      return `${PUBLIC_BASE_URL}${path}`
     },
     async loadMedia() {
       this.loading = true
@@ -192,6 +198,12 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.cover-large {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
 }
 
 .placeholder-img {

@@ -3,7 +3,15 @@ import Media from "../models/media.js";
 //  Create media
 export const createMedia = async (req, res) => {
   try {
-    const media = new Media(req.body);
+    const { title, author, category } = req.body;
+
+    // Build image URLs from uploaded files if present
+    const coverFile = req.files?.cover?.[0];
+    const galleryFiles = req.files?.gallery || [];
+    const coverImageUrl = coverFile ? `/uploads/${coverFile.filename}` : "";
+    const galleryImageUrls = galleryFiles.map(f => `/uploads/${f.filename}`);
+
+    const media = new Media({ title, author, category, coverImageUrl, galleryImageUrls });
     await media.save();
     res.status(201).json(media);
   } catch (err) {
@@ -53,7 +61,17 @@ export const getMediaById = async (req, res) => {
 // Update media
 export const updateMedia = async (req, res) => {
   try {
-    const media = await Media.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const update = {};
+    const allowed = ["title", "author", "category"]; // textual fields only
+    for (const key of allowed) if (key in req.body) update[key] = req.body[key];
+
+    // If new files were uploaded, update image paths
+    const coverFile = req.files?.cover?.[0];
+    const galleryFiles = req.files?.gallery || [];
+    if (coverFile) update.coverImageUrl = `/uploads/${coverFile.filename}`;
+    if (galleryFiles.length) update.galleryImageUrls = galleryFiles.map(f => `/uploads/${f.filename}`);
+
+    const media = await Media.findByIdAndUpdate(req.params.id, update, { new: true });
     if (!media) return res.status(404).json({ message: "Media not found" });
     res.json(media);
   } catch (err) {

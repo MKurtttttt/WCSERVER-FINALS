@@ -46,6 +46,7 @@
         <table class="media-table">
           <thead>
             <tr>
+              <th>Cover</th>
               <th>Title</th>
               <th>Author</th>
               <th>Category</th>
@@ -57,6 +58,9 @@
           </thead>
           <tbody>
             <tr v-for="item in mediaList" :key="item._id">
+              <td>
+                <img v-if="item.coverImageUrl" :src="resolveImage(item.coverImageUrl)" alt="cover" class="cover-thumb" />
+              </td>
               <td>{{ item.title }}</td>
               <td>{{ item.author }}</td>
               <td><span class="category-badge">{{ item.category }}</span></td>
@@ -123,6 +127,16 @@
             </select>
           </div>
 
+          <div class="form-group">
+            <label>Cover Image</label>
+            <input ref="coverInput" type="file" accept="image/*" />
+          </div>
+
+          <div class="form-group">
+            <label>Gallery Images (you can select multiple)</label>
+            <input ref="galleryInput" type="file" accept="image/*" multiple />
+          </div>
+
           <div class="modal-actions">
             <button type="submit" class="btn-submit">
               {{ isEditMode ? 'Update' : 'Create' }}
@@ -136,7 +150,7 @@
 </template>
 
 <script>
-import { mediaAPI } from '../services/api'
+import { mediaAPI, PUBLIC_BASE_URL } from '../services/api'
 
 export default {
   name: 'AdminDashboard',
@@ -218,19 +232,24 @@ export default {
     },
     async submitForm() {
       try {
+        const fd = new FormData()
+        fd.append('title', this.form.title)
+        fd.append('author', this.form.author)
+        fd.append('category', this.form.category)
+
+        const coverFile = this.$refs.coverInput?.files?.[0]
+        if (coverFile) fd.append('cover', coverFile)
+
+        const galleryFiles = this.$refs.galleryInput?.files || []
+        for (let i = 0; i < galleryFiles.length; i++) {
+          fd.append('gallery', galleryFiles[i])
+        }
+
         if (this.isEditMode) {
-          await mediaAPI.update(this.form.id, {
-            title: this.form.title,
-            author: this.form.author,
-            category: this.form.category
-          })
+          await mediaAPI.updateMultipart(this.form.id, fd)
           alert('Media updated successfully!')
         } else {
-          await mediaAPI.create({
-            title: this.form.title,
-            author: this.form.author,
-            category: this.form.category
-          })
+          await mediaAPI.createMultipart(fd)
           alert('Media created successfully!')
         }
         this.closeModal()
@@ -249,6 +268,11 @@ export default {
       } catch (error) {
         alert(error.response?.data?.message || 'Failed to delete media')
       }
+    },
+    resolveImage(path) {
+      if (!path) return ''
+      if (path.startsWith('http://') || path.startsWith('https://')) return path
+      return `${PUBLIC_BASE_URL}${path}`
     },
     formatDate(dateString) {
       const date = new Date(dateString)
@@ -449,6 +473,14 @@ export default {
   border-radius: 15px;
   font-size: 12px;
   font-weight: 600;
+}
+
+.cover-thumb {
+  width: 48px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
 .actions-cell {

@@ -2,6 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
+import fs from "fs";
 
 import mediaRoutes from "./routes/mediaRoutes.js";
 import protectedRoutes from "./routes/protectedRoutes.js";
@@ -19,6 +21,13 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json()); // 👈 this parses JSON bodies
+
+// ✅ Ensure uploads directory exists and serve it statically
+const uploadsDir = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use("/uploads", express.static(uploadsDir));
 
 // ✅ Database connection
 mongoose.connect(process.env.MONGO_URI)

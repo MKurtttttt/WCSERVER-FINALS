@@ -69,7 +69,8 @@
             @click="viewMediaDetail(item._id)"
           >
             <div class="media-image">
-              <div class="placeholder-img">📚</div>
+              <img v-if="item.coverImageUrl" :src="resolveImage(item.coverImageUrl)" :alt="item.title" />
+              <div v-else class="placeholder-img">📚</div>
             </div>
             <div class="media-info">
               <h3>{{ item.title }}</h3>
@@ -113,7 +114,7 @@
 </template>
 
 <script>
-import { mediaAPI, userMediaAPI } from '../services/api'
+import { mediaAPI, userMediaAPI, PUBLIC_BASE_URL } from '../services/api'
 
 export default {
   name: 'HomePage',
@@ -140,6 +141,11 @@ export default {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
       this.isLoggedIn = !!token
       this.isAdmin = user.role === 'admin'
+    },
+    resolveImage(path) {
+      if (!path) return ''
+      if (path.startsWith('http://') || path.startsWith('https://')) return path
+      return `${PUBLIC_BASE_URL}${path}`
     },
     async loadMedia() {
       this.loading = true
@@ -412,6 +418,11 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.media-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .placeholder-img {
   font-size: 60px;
