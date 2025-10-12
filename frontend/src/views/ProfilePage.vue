@@ -3,10 +3,10 @@
     <nav class="navbar">
       <div class="nav-container">
         <div class="logo">
-          <h2>BookMedia</h2>
+          <h2>Book & Media Library</h2>
         </div>
         <button @click="$router.push('/')" class="btn-back">← Back to Home</button>
-      </div>
+      </div>  
     </nav>
 
     <div class="profile-container">
@@ -157,8 +157,8 @@ export default {
 
 <style scoped>
 .navbar {
-  background: #2c3e50;
-  color: white;
+  background: linear-gradient(135deg, #7D3131 0%, #D26565 100%);
+  color: #000000;
   padding: 15px 0;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -175,7 +175,8 @@ export default {
 .logo h2 {
   margin: 0;
   font-size: 24px;
-  color: #3498db;
+  font-family: 'Rock Salt', cursive;
+  color: #ffffff;
 }
 
 .btn-back {
@@ -219,7 +220,7 @@ export default {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #D26565 0%, #FFC5C5 100%);
   display: flex;
   align-items: center;
   justify-content: center;

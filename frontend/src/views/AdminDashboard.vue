@@ -2,8 +2,8 @@
   <div class="admin-page">
     <nav class="navbar">
       <div class="nav-container">
-        <div class="logo">
-          <h2>BookMedia - Admin Panel</h2>
+        <div class="logo" @click="$router.push('/')" style="cursor: pointer;">
+          <h2 class="logo-text">Book & Media Library - Admin Panel</h2>
         </div>
         <div class="nav-actions">
           <button @click="$router.push('/')" class="btn-home">Home</button>
@@ -184,7 +184,10 @@ export default {
           page: this.currentPage,
           limit: this.limit
         }
-        if (this.searchQuery) params.title = this.searchQuery
+        if (this.searchQuery) {
+          params.title = this.searchQuery
+          params.author = this.searchQuery
+        }
         if (this.filterCategory) params.category = this.filterCategory
 
         const response = await mediaAPI.getAll(params)
@@ -293,8 +296,8 @@ export default {
 
 <style scoped>
 .navbar {
-  background: #2c3e50;
-  color: white;
+  background: linear-gradient(135deg, #7D3131 0%, #D26565 100%);
+  color: #000000;
   padding: 15px 0;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -311,7 +314,8 @@ export default {
 .logo h2 {
   margin: 0;
   font-size: 24px;
-  color: #3498db;
+  font-family: 'Rock Salt', cursive;
+  color: #ffffff;
 }
 
 .nav-actions {
@@ -320,33 +324,35 @@ export default {
 }
 
 .btn-home {
-  background: #3498db;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
 .btn-home:hover {
-  background: #2980b9;
+  background: #5a2424;
 }
 
 .btn-logout {
-  background: #e74c3c;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
 .btn-logout:hover {
-  background: #c0392b;
+  background: #5a2424;
 }
 
 .admin-page {
@@ -373,6 +379,8 @@ export default {
   font-size: 36px;
   color: #2c3e50;
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .btn-create {
@@ -383,6 +391,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   transition: background 0.3s;
 }
@@ -404,12 +413,14 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   min-width: 200px;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #FFC5C5;
 }
 
 .filter-select {
@@ -417,13 +428,15 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   cursor: pointer;
   background: white;
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #FFC5C5;
 }
 
 .loading {
@@ -443,11 +456,13 @@ export default {
   width: 100%;
   border-collapse: collapse;
   min-width: 800px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .media-table thead {
-  background: #34495e;
-  color: white;
+  background: #FFC5C5;
+  color: #000000;
 }
 
 .media-table th {
@@ -467,8 +482,8 @@ export default {
 
 .category-badge {
   display: inline-block;
-  background: #3498db;
-  color: white;
+  background: #FFC5C5;
+  color: #000000;
   padding: 4px 12px;
   border-radius: 15px;
   font-size: 12px;
@@ -495,25 +510,26 @@ export default {
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: all 0.3s;
 }
 
 .btn-edit-sm {
-  background: #3498db;
-  color: white;
+  background: #FFC5C5;
+  color: #000000;
 }
 
 .btn-edit-sm:hover {
-  background: #2980b9;
+  background: #ffb0b0;
 }
 
 .btn-delete-sm {
-  background: #e74c3c;
+  background: #7D3131;
   color: white;
 }
 
 .btn-delete-sm:hover {
-  background: #c0392b;
+  background: #5a2424;
 }
 
 .empty-table {
@@ -521,6 +537,8 @@ export default {
   text-align: center;
   color: #7f8c8d;
   font-size: 18px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .pagination {
@@ -532,18 +550,19 @@ export default {
 }
 
 .page-btn {
-  background: #3498db;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
 .page-btn:hover:not(:disabled) {
-  background: #2980b9;
+  background: #5a2424;
 }
 
 .page-btn:disabled {
@@ -553,6 +572,7 @@ export default {
 
 .page-info {
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   color: #2c3e50;
 }
 
@@ -580,6 +600,8 @@ export default {
 .modal-content h2 {
   margin-bottom: 25px;
   color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .form-group {
@@ -590,6 +612,7 @@ export default {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   color: #2c3e50;
 }
 
@@ -600,12 +623,14 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #FFC5C5;
 }
 
 .modal-actions {
@@ -623,6 +648,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
@@ -639,6 +665,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 

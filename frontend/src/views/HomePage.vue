@@ -3,24 +3,24 @@
     <nav class="navbar">
       <div class="nav-container">
         <div class="logo">
-          <h2>BookMedia</h2>
+          <h2>Book & Media Library</h2>
         </div>
         <div class="nav-links">
           <router-link to="/" class="nav-link active">Home</router-link>
           
-          <div class="dropdown">
-            <button class="nav-link dropdown-btn">
+          <div class="dropdown" :class="{ active: showDropdown }">
+            <button class="nav-link dropdown-btn" @click="toggleDropdown">
               Category <span>▼</span>
             </button>
-            <div class="dropdown-content">
-              <a @click="filterByCategory('')">All</a>
-              <a @click="filterByCategory('Fiction')">Fiction</a>
-              <a @click="filterByCategory('Non-Fiction')">Non-Fiction</a>
-              <a @click="filterByCategory('Science')">Science</a>
-              <a @click="filterByCategory('History')">History</a>
-              <a @click="filterByCategory('Biography')">Biography</a>
-              <a @click="filterByCategory('Fantasy')">Fantasy</a>
-              <a @click="filterByCategory('Mystery')">Mystery</a>
+            <div class="dropdown-content" v-show="showDropdown">
+              <a @click="selectCategory('')">All</a>
+              <a @click="selectCategory('Fiction')">Fiction</a>
+              <a @click="selectCategory('Non-Fiction')">Non-Fiction</a>
+              <a @click="selectCategory('Science')">Science</a>
+              <a @click="selectCategory('History')">History</a>
+              <a @click="selectCategory('Biography')">Biography</a>
+              <a @click="selectCategory('Fantasy')">Fantasy</a>
+              <a @click="selectCategory('Mystery')">Mystery</a>
             </div>
           </div>
 
@@ -36,7 +36,11 @@
               type="text" 
               placeholder="Search books..."
             />
-            <button @click="handleSearch">🔍</button>
+            <button @click="handleSearch" class="search-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 21L16.514 16.506L21 21ZM19 10.5C19 15.194 15.194 19 10.5 19C5.806 19 2 15.194 2 10.5C2 5.806 5.806 2 10.5 2C15.194 2 19 5.806 19 10.5Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
           </div>
           <button v-if="!isLoggedIn" @click="$router.push('/auth')" class="btn-login">
             Login
@@ -128,12 +132,17 @@ export default {
       totalPages: 1,
       limit: 12,
       isLoggedIn: false,
-      isAdmin: false
+      isAdmin: false,
+      showDropdown: false
     }
   },
   mounted() {
     this.checkAuth()
     this.loadMedia()
+    document.addEventListener('click', this.handleClickOutside)
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside)
   },
   methods: {
     checkAuth() {
@@ -154,7 +163,10 @@ export default {
           page: this.currentPage,
           limit: this.limit
         }
-        if (this.searchQuery) params.title = this.searchQuery
+        if (this.searchQuery) {
+          params.title = this.searchQuery
+          params.author = this.searchQuery
+        }
         if (this.selectedCategory) params.category = this.selectedCategory
 
         const response = await mediaAPI.getAll(params)
@@ -175,6 +187,18 @@ export default {
       this.currentPage = 1
       this.loadMedia()
     },
+   toggleDropdown() {
+     this.showDropdown = !this.showDropdown
+   },
+   selectCategory(category) {
+     this.filterByCategory(category)
+     this.showDropdown = false
+   },
+   handleClickOutside(event) {
+     if (!this.$el.querySelector('.dropdown').contains(event.target)) {
+       this.showDropdown = false
+     }
+   },
     changePage(page) {
       if (page >= 1 && page <= this.totalPages) {
         this.currentPage = page
@@ -206,13 +230,10 @@ export default {
 
 <style scoped>
 .navbar {
-  background: #2c3e50;
-  color: white;
+  background: linear-gradient(135deg, #7D3131 0%, #D26565 100%);
+  color: #000000;
   padding: 15px 0;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
 }
 
 .nav-container {
@@ -229,7 +250,8 @@ export default {
 .logo h2 {
   margin: 0;
   font-size: 24px;
-  color: #ec4899;
+  font-family: 'Rock Salt', cursive;
+  color: #ffffff;
 }
 
 .nav-links {
@@ -269,7 +291,6 @@ export default {
 }
 
 .dropdown-content {
-  display: none;
   position: absolute;
   background: white;
   min-width: 180px;
@@ -279,10 +300,6 @@ export default {
   left: 0;
   margin-top: 10px;
   z-index: 1001;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
 }
 
 .dropdown-content a {
@@ -324,10 +341,25 @@ export default {
   padding: 8px 15px;
   cursor: pointer;
   transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-box button:hover {
   background: #2980b9;
+}
+
+.search-icon {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .btn-login, .btn-logout {
@@ -354,7 +386,7 @@ export default {
 }
 
 .hero-section {
-  background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  background: linear-gradient(135deg, #D26565 0%, #FFC5C5 100%);
   color: white;
   padding: 80px 20px;
   text-align: center;
@@ -414,7 +446,7 @@ export default {
 
 .media-image {
   height: 200px;
-  background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+  background: linear-gradient(135deg, #D26565 0%, #FFC5C5 100%);
   display: flex;
   align-items: center;
   justify-content: center;

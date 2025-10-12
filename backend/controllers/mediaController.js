@@ -25,8 +25,17 @@ export const getAllMedia = async (req, res) => {
     const { title, author, category, page = 1, limit = 10 } = req.query;
     const query = {};
 
-    if (title) query.title = { $regex: title, $options: "i" };
-    if (author) query.author = { $regex: author, $options: "i" };
+    // Handle search query - search in both title and author (OR condition)
+  if (title || author) {
+  const searchConditions = [];
+  if (title) searchConditions.push({ title: { $regex: title, $options: "i" } });
+  if (author) searchConditions.push({ author: { $regex: author, $options: "i" } });
+  
+  if (searchConditions.length > 0) {
+    query.$or = searchConditions;
+  }
+}
+
     if (category) query.category = { $regex: `^${category}$`, $options: "i" };
 
     const skip = (page - 1) * limit;

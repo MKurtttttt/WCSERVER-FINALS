@@ -2,8 +2,8 @@
   <div class="saved-page">
     <nav class="navbar">
       <div class="nav-container">
-        <div class="logo">
-          <h2>BookMedia</h2>
+        <div class="logo" @click="$router.push('/')" style="cursor: pointer;">
+          <h2 class="logo-text">Book & Media Library</h2>
         </div>
         <button @click="$router.push('/')" class="btn-back">← Back to Home</button>
       </div>
@@ -61,7 +61,8 @@
           class="saved-card"
         >
           <div class="card-image">
-            <div class="placeholder-img">📚</div>
+            <img v-if="item.mediaId.coverImageUrl" :src="resolveImage(item.mediaId.coverImageUrl)" :alt="item.mediaId.title" />
+            <div v-else class="placeholder-img">📚</div>
             <div class="status-badge" :class="getStatusClass(item.status)">
               {{ item.status }}
             </div>
@@ -136,7 +137,7 @@
           </div>
 
           <div class="modal-actions">
-            <button type="submit" class="btn-primary">Update</button>
+            <button type="submit" class="btn-submit">Update</button>
             <button type="button" @click="closeEditModal" class="btn-cancel">Cancel</button>
           </div>
         </form>
@@ -146,7 +147,7 @@
 </template>
 
 <script>
-import { userMediaAPI } from '../services/api'
+import { userMediaAPI, PUBLIC_BASE_URL } from '../services/api'
 
 export default {
   name: 'SavedPage',
@@ -175,6 +176,11 @@ export default {
     this.loadSavedMedia()
   },
   methods: {
+    resolveImage(path) {
+    if (!path) return ''
+    if (path.startsWith('http://') || path.startsWith('https://')) return path
+    return `${PUBLIC_BASE_URL}${path}`
+   },
     async loadSavedMedia() {
       this.loading = true
       try {
@@ -225,11 +231,13 @@ export default {
       if (!confirm('Are you sure you want to remove this book from your library?')) return
       
       try {
-        await userMediaAPI.delete(id)
+        const response = await userMediaAPI.delete(id)
         await this.loadSavedMedia()
-        alert('Book removed from library')
+        alert('Book removed from library successfully!')
       } catch (error) {
-        alert(error.response?.data?.message || 'Failed to remove book')
+        console.error('Remove media error:', error)
+        const errorMessage = error.response?.data?.message || error.message || 'Failed to remove book'
+        alert(`Error: ${errorMessage}`)
       }
     }
   }
@@ -238,8 +246,8 @@ export default {
 
 <style scoped>
 .navbar {
-  background: #2c3e50;
-  color: white;
+  background: linear-gradient(135deg, #7D3131 0%, #D26565 100%);
+  color: #ffffff;
   padding: 15px 0;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -256,22 +264,24 @@ export default {
 .logo h2 {
   margin: 0;
   font-size: 24px;
-  color: #3498db;
+  font-family: 'Rock Salt', cursive;
+  color: #ffffff;
 }
 
 .btn-back {
-  background: #3498db;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
 .btn-back:hover {
-  background: #2980b9;
+  background: #5a2424;
 }
 
 .saved-page {
@@ -289,6 +299,8 @@ export default {
   font-size: 36px;
   margin-bottom: 30px;
   color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .filter-tabs {
@@ -305,18 +317,19 @@ export default {
   border-radius: 25px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: all 0.3s;
 }
 
 .tab-btn:hover {
-  border-color: #3498db;
-  color: #3498db;
+  border-color: #FFC5C5;
+  color: #7D3131;
 }
 
 .tab-btn.active {
-  background: #3498db;
-  border-color: #3498db;
-  color: white;
+  background: #FFC5C5;
+  border-color: #FFC5C5;
+  color: #000000;
 }
 
 .loading {
@@ -341,11 +354,32 @@ export default {
   font-size: 28px;
   color: #2c3e50;
   margin-bottom: 10px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .empty-state p {
   color: #7f8c8d;
   margin-bottom: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: #7D3131;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  transition: background 0.3s;
+}
+
+.btn-primary:hover {
+  background: #5a2424;
 }
 
 .saved-grid {
@@ -368,11 +402,18 @@ export default {
 
 .card-image {
   height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #D26565 0%, #FFC5C5 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+  overflow: hidden;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .placeholder-img {
@@ -387,11 +428,12 @@ export default {
   border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   color: white;
 }
 
 .status-badge.to-read {
-  background: #3498db;
+  background: #7D3131;
 }
 
 .status-badge.in-progress {
@@ -410,22 +452,28 @@ export default {
   font-size: 20px;
   margin-bottom: 8px;
   color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .author {
   color: #7f8c8d;
   font-size: 14px;
   margin-bottom: 5px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .category {
   display: inline-block;
-  background: #ecf0f1;
-  color: #2c3e50;
+  background: #FFC5C5;
+  color: #000000;
   padding: 4px 12px;
   border-radius: 15px;
   font-size: 12px;
   margin: 10px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .progress-section {
@@ -440,6 +488,8 @@ export default {
   justify-content: space-between;
   font-size: 14px;
   color: #7f8c8d;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .rating-section {
@@ -473,25 +523,26 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
 .btn-edit {
-  background: #3498db;
-  color: white;
+  background: #FFC5C5;
+  color: #000000;
 }
 
 .btn-edit:hover {
-  background: #2980b9;
+  background: #ffb0b0;
 }
 
 .btn-remove {
-  background: #e74c3c;
+  background: #7D3131;
   color: white;
 }
 
 .btn-remove:hover {
-  background: #c0392b;
+  background: #5a2424;
 }
 
 .modal-overlay {
@@ -520,6 +571,8 @@ export default {
 .modal-content h2 {
   margin-bottom: 20px;
   color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .form-group {
@@ -530,6 +583,7 @@ export default {
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   color: #2c3e50;
 }
 
@@ -540,12 +594,14 @@ export default {
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .form-group select:focus,
 .form-group input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #FFC5C5;
 }
 
 .star-rating {
@@ -577,20 +633,21 @@ export default {
   margin-top: 25px;
 }
 
-.btn-primary {
+.btn-submit {
   flex: 1;
-  background: #3498db;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 12px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
-.btn-primary:hover {
-  background: #2980b9;
+.btn-submit:hover {
+  background: #5a2424;
 }
 
 .btn-cancel {
@@ -602,6 +659,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 

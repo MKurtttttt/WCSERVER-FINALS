@@ -2,8 +2,8 @@
   <div class="detail-page">
     <nav class="navbar">
       <div class="nav-container">
-        <div class="logo">
-          <h2>BookMedia</h2>
+        <div class="logo" @click="$router.push('/')" style="cursor: pointer;">
+          <h2 class="logo-text">Book & Media Library</h2>
         </div>
         <button @click="$router.push('/')" class="btn-back">← Back to Home</button>
       </div>
@@ -127,8 +127,8 @@ export default {
 
 <style scoped>
 .navbar {
-  background: #2c3e50;
-  color: white;
+  background: #FFC5C5;
+  color: #000000;
   padding: 15px 0;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
@@ -145,22 +145,24 @@ export default {
 .logo h2 {
   margin: 0;
   font-size: 24px;
-  color: #3498db;
+  font-family: 'Rock Salt', cursive;
+  color: #ffffff;
 }
 
 .btn-back {
-  background: #3498db;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   transition: background 0.3s;
 }
 
 .btn-back:hover {
-  background: #2980b9;
+  background: #5a2424;
 }
 
 .detail-page {
@@ -192,13 +194,14 @@ export default {
 .media-image-large {
   width: 100%;
   height: 500px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #FFC5C5 0%, #f472b6 100%);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
+
 .cover-large {
   width: 100%;
   height: 100%;
@@ -214,22 +217,27 @@ export default {
   font-size: 42px;
   margin-bottom: 15px;
   color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .author-large {
   font-size: 24px;
   color: #7f8c8d;
   margin-bottom: 20px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .category-large {
   display: inline-block;
-  background: #3498db;
-  color: white;
+  background: #FFC5C5;
+  color: #000000;
   padding: 8px 20px;
   border-radius: 25px;
   font-size: 16px;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   margin-bottom: 30px;
 }
 
@@ -256,6 +264,7 @@ export default {
   font-size: 18px;
   color: #2c3e50;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .actions-section {
@@ -271,6 +280,7 @@ export default {
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   transition: all 0.3s;
 }
@@ -282,13 +292,13 @@ export default {
 }
 
 .btn-login-large {
-  background: #3498db;
+  background: #7D3131;
 }
 
 .btn-login-large:hover {
-  background: #2980b9;
+  background: #5a2424;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 5px 15px rgba(125, 49, 49, 0.3);
 }
 
 .info-section {
@@ -299,6 +309,8 @@ export default {
   font-size: 28px;
   margin-bottom: 20px;
   color: #2c3e50;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .description {
@@ -306,6 +318,8 @@ export default {
   line-height: 1.8;
   color: #555;
   margin-bottom: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .meta-info {
@@ -318,6 +332,8 @@ export default {
   margin: 10px 0;
   color: #7f8c8d;
   font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .meta-info strong {
@@ -333,22 +349,25 @@ export default {
   font-size: 32px;
   color: #2c3e50;
   margin-bottom: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
 }
 
 .btn-primary {
-  background: #3498db;
+  background: #7D3131;
   color: white;
   border: none;
   padding: 12px 30px;
   border-radius: 5px;
   cursor: pointer;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   transition: background 0.3s;
 }
 
 .btn-primary:hover {
-  background: #2980b9;
+  background: #5a2424;
 }
 
 @media (max-width: 968px) {

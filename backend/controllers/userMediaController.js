@@ -33,11 +33,13 @@ export const getUserMedia = async (req, res) => {
 // Update user media
 export const updateUserMedia = async (req, res) => {
   try {
-    const entry = await UserMedia.findById(req.params.id);
+     const entry = await UserMedia.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user.id },
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!entry) return res.status(404).json({ message: "Entry not found" });
 
-    Object.assign(entry, req.body);
-    await entry.save();
     res.json(entry);
   } catch (err) {
     console.error("Update user media error:", err);
@@ -48,10 +50,12 @@ export const updateUserMedia = async (req, res) => {
 // Delete user media
 export const deleteUserMedia = async (req, res) => {
   try {
-    const entry = await UserMedia.findById(req.params.id);
+    const entry = await UserMedia.findOneAndDelete({ 
+      _id: req.params.id, 
+      userId: req.user.id 
+    });
     if (!entry) return res.status(404).json({ message: "Entry not found" });
 
-    await entry.remove();
     res.json({ message: "Entry deleted successfully" });
   } catch (err) {
     console.error("Delete user media error:", err);
